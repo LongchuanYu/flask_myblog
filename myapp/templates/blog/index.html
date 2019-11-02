@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Posts 
+{% endblock %}
+
+{%block mycss%}
+<link href="{{url_for('static',filename='blog_index.css')  }}" rel="stylesheet" >
+{%endblock%}
+
+{% block mainbody %}
+{% for post in posts %}
+<div class="list-group">
+  <a href="#" class="list-group-item active">
+    <h4 class="list-group-item-heading">{{post['title']}}</h4>
+    <p class="list-group-item-text blog-index-textbody">{{ post['body']  }}</p>
+  </a>
+</div>
+{% endfor %}
+{% endblock %}
