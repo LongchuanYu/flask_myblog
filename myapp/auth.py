@@ -3,7 +3,7 @@ import functools
 from flask import(
     Blueprint,flash,g,redirect,render_template,request,session,url_for
 )
-from db import get_db
+from myapp.db import get_db
 from werkzeug.security import generate_password_hash,check_password_hash
 bp = Blueprint('auth',__name__,url_prefix='/auth')
 
@@ -31,7 +31,7 @@ def register():
 			)
 			db.commit()
 			#注册成功后重定向的页面
-			return redirect('http://www.baidu.com')
+			return redirect(url_for('auth.login'))
 		flash(error)
 	return render_template('auth/register.html')
 			

@@ -1,5 +1,6 @@
-from flask import Flask
-app=Flask(__name__)
-@app.route('/')
+import click
+@click.command('init-db')
 def hello():
-	return "hello liyang"
+	click.echo('hello')
+if __name__=="__main__":
+	hello()

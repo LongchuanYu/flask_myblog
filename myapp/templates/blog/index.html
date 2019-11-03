@@ -8,10 +8,21 @@ Posts
 <link href="{{url_for('static',filename='blog_index.css')  }}" rel="stylesheet" >
 {%endblock%}
 
-{% block mainbody %}
+
+
+{% block blog_title %}
+  Welcome!
+{% endblock %}
+
+{% block blog_desc %}
+this is my first blog
+{% endblock %}
+
+
+{% block blog_text %}
 {% for post in posts %}
 <div class="list-group">
-  <a href="#" class="list-group-item active">
+  <a href="{{ url_for('blog.article',id=post['id']) }}" class="list-group-item">
     <h4 class="list-group-item-heading">{{post['title']}}</h4>
     <p class="list-group-item-text blog-index-textbody">{{ post['body']  }}</p>
   </a>

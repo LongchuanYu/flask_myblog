@@ -47,13 +47,20 @@
 
     <div class="container">
       <div class="blog-header">
-          <h1 class="blog-title">The Blog Test</h1>
-          <p class="lead blog-description">The official example template of creating a blog with Bootstrap.</p>
+          <h2 class="blog-title"><b>
+            {% block blog_title %}
+            {% endblock %}
+          </b> </h2>
+          <p class="lead blog-description">
+              {% block blog_desc %}
+              {% endblock %}
+          </p>
       </div>
+
       
       <div class="row">
         <div class="col-sm-8 blog-main">     
-          {% block mainbody %}
+          {% block blog_text %}
           {%endblock%}
         </div><!-- /.blog-main -->  
 
@@ -65,7 +72,6 @@
           </div>
           <div class="sidebar-module">
             <h4>Archives</h4>
-            {% if g.user %}
             <ol class="list-unstyled">
               <li><a href="#">March 2014</a></li>
               <li><a href="#">February 2014</a></li>
@@ -80,7 +86,6 @@
               <li><a href="#">May 2013</a></li>
               <li><a href="#">April 2013</a></li>
             </ol>
-            {% endif %}
           </div>
           <div class="sidebar-module">
           <h4>Elsewhere</h4>

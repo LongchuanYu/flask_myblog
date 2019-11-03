@@ -1,0 +1,13 @@
+.blog-post {
+    font-size: 0.8em;
+}
+
+
+.blog-article-bottom{
+    font-size: 0.8em;
+    width: 100%;
+    text-align: right;
+    padding-right: 5px;
+    margin-top: 5px;
+    color: #a8b1ba;
+}
