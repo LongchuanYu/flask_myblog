@@ -71,7 +71,7 @@ def logout():
 def load_logged_in_user():
 	'''之后可以从g.user判断用户是否处于登录状态
 	session有值证明用户已登录，从db获取用户id存到g.user
-	没有值则设置g.user=None
+	没有值则设置g.user=None，说明用户未登录
 	'''
 	user_id = session.get('user_id')
 	if user_id is None:

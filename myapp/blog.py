@@ -75,7 +75,26 @@ def update(id):
 @bp.route('/delete/<int:id>')
 @login_required
 def delete(id):
-    pass
+    db = get_db()
+    #易忘点：数据库查询要.fetchone()，不要忘了额
+    post = db.execute(
+        'SELECT author_id,id'
+        ' FROM post P'
+        ' WHERE p.id=?',
+        (id,)
+    ).fetchone()
+    if not post or not g.user or post['author_id']!=g.user['id']:
+        abort(403)
+
+    db = get_db()
+    db.execute(
+        'DELETE FROM post WHERE id=?',
+        (id,)
+    )
+    #易忘点：数据库操作完毕都要commit一下
+    db.commit()
+    # return redirect(url_for('blog.index'))
+    return "123"
 
 
 
