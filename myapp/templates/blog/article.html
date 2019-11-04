@@ -13,14 +13,14 @@
 
 {% block blog_text %}
 <div class="blog-post">
-    <p>{{post['body']}}</p>
+    {{post['body']|safe}}
 </div><!-- /.blog-post -->
 <div class="blog-article-bottom">
     <span>posted @ {{post['created']}} &nbsp; {{post['username']}}</span> 
     &nbsp;
     {%if g.user and g.user['id'] == post['author_id']%}
     <a href="{{url_for('blog.update',id=post['id']) }}">编辑</a>
-    <a href="{{url_for('blog.delete',id=post['id']) }}">删除</a>
+    <a href="{{url_for('blog.delete',id=post['id']) }}" onclick="return confirm('确定删除？')">删除</a>
     {%endif%}
 </div>
 {%endblock%}

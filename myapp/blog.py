@@ -24,8 +24,10 @@ def index():
 @login_required
 def create():
     if request.method=='POST':
-        title = request.form['post_title']
-        body = request.form['post_text']
+        # title = request.form['post_title']
+        # body = request.form['post_text']
+        title = request.form.get('post_title')
+        body = request.form.get('ckeditor')
         error=None
         if not title:
             error = 'Title is required'
@@ -44,7 +46,7 @@ def create():
 
 @bp.route('/article/<int:id>')
 def article(id):
-    post = get_post(id)
+    post = get_post(id,check_author=False)
     return render_template('blog/article.html',post=post)
 
 
@@ -75,17 +77,16 @@ def update(id):
 @bp.route('/delete/<int:id>')
 @login_required
 def delete(id):
-    db = get_db()
+    
     #易忘点：数据库查询要.fetchone()，不要忘了额
-    post = db.execute(
-        'SELECT author_id,id'
-        ' FROM post P'
-        ' WHERE p.id=?',
-        (id,)
-    ).fetchone()
-    if not post or not g.user or post['author_id']!=g.user['id']:
-        abort(403)
+    # post = db.execute(
+    #     'SELECT author_id'
+    #     ' FROM post P'
+    #     ' WHERE p.id=?',
+    #     (id,)
+    # ).fetchone()
 
+    get_post(id)
     db = get_db()
     db.execute(
         'DELETE FROM post WHERE id=?',
@@ -93,15 +94,11 @@ def delete(id):
     )
     #易忘点：数据库操作完毕都要commit一下
     db.commit()
-    # return redirect(url_for('blog.index'))
-    return "123"
+    return redirect(url_for('blog.index'))
 
 
 
-
-
-
-def get_post(id):
+def get_post(id,check_author=True):
     db = get_db()
     post = db.execute(
         'SELECT p.id,title,body,created, author_id, username'
@@ -109,6 +106,8 @@ def get_post(id):
         ' WHERE p.id=?' ,
         (id,)
     ).fetchone()
-    if not post:
-        abort(404,'Post is None')
+    if not post or not g.user:
+        abort(404,"Post None")
+    if check_author and post['author_id']!=g.user['id']:
+        abort(403)
     return post

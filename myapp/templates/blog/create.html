@@ -16,7 +16,7 @@ New
 
 {% block blog_text %}
 <form method="post">
-  <div class="form-group">
+  <!-- <div class="form-group">
     <label for="post-title">Titile</label>
     <input type="text" name="post_title" value="{{post['title'] if update else ''}}" class="form-control" id="post-title" placeholder="Post title">
   </div>
@@ -29,7 +29,18 @@ New
       id="post-text" 
       placeholder="Post text"
     >{{post['body'] if update else ''}}</textarea>
+  </div> -->
+  <div class="form-group">
+    <label for="post-title">Titile</label>
+    <input type="text" name="post_title" value="{{post['title'] if update else ''}}" class="form-control" id="post-title" placeholder="Post title">
   </div>
+  <label for="ckeditor">Body</label>
+  {{ ckeditor.create() }}
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
+
+{%block myjs%} 
+{{ckeditor.load(custom_url=url_for('static',filename='js/ckeditor/ckeditor.js'))       }}  
+{{ ckeditor.config() }}
+{%endblock%}
 {% endblock %}
