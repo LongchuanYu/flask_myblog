@@ -106,7 +106,7 @@ def get_post(id,check_author=True):
         ' WHERE p.id=?' ,
         (id,)
     ).fetchone()
-    if not post or not g.user:
+    if not post:
         abort(404,"Post None")
     if check_author and post['author_id']!=g.user['id']:
         abort(403)

@@ -35,7 +35,7 @@ New
     <input type="text" name="post_title" value="{{post['title'] if update else ''}}" class="form-control" id="post-title" placeholder="Post title">
   </div>
   <label for="ckeditor">Body</label>
-  {{ ckeditor.create() }}
+  {{ ckeditor.create(value=post['body']) if update else ckeditor.create() }}
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
 

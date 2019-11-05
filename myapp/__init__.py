@@ -13,7 +13,7 @@ def create_app():
 	app.config['SECRET_KEY']='dev' 
 	app.DEBUG=True
 	app.config['CKEDITOR_SERVE_LOCAL'] = True
-	app.config['CKEDITOR_HEIGHT'] = 600
+	app.config['CKEDITOR_HEIGHT'] = 400
 	try:
 		os.makedirs(app.instance_path)
 	except OSError:
