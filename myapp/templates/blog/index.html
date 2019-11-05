@@ -24,7 +24,7 @@ this is my first blog
 <div class="list-group">
   <a href="{{ url_for('blog.article',id=post['id']) }}" class="list-group-item">
     <h4 class="list-group-item-heading">{{post['title']}}</h4>
-    <p class="list-group-item-text blog-index-textbody">{{ post['body']  }}</p>
+    <p class="list-group-item-text blog-index-textbody">{{ post['body']|ellipsis  }}</p>
   </a>
 </div>
 {% endfor %}

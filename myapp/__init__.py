@@ -19,6 +19,13 @@ def create_app():
 	except OSError:
 		print('makedirs existed')
 
+	@app.template_filter('ellipsis')
+	def do_ellipsis(arg):
+		import re
+		return re.sub(r"<.*?>",'',arg)
+
+
+
 	from . import db
 	db.init_app(app)
 	from . import auth
