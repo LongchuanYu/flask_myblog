@@ -4,3 +4,8 @@
     white-space: nowrap;
     text-overflow:ellipsis;
 }
+
+.blog-index-title{
+    font-size:1.5em;
+}
+

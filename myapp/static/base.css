@@ -6,6 +6,7 @@
     font-family: tahoma,arial,sans-serif;
     font-style:normal;
     color: #000;
+    background-color: #f6f6f6;
     font-variant-ligatures: normal;
     font-variant-caps: normal;
     font-variant-numeric: normal;
@@ -41,9 +42,23 @@
   /*
    * Masthead for nav
    */
-  
+  .blog-index-search{
+    display: inline-block;
+    height:30px;
+    width:30px;
+    cursor: pointer;
+  }
+  .blog-index-search .glyphicon{
+    font-size: 1.3em;
+    color: #f6f6f6;
+    top:5px;
+    margin-left: 3px;
+  }
+
+
   .blog-masthead {
-    background-color: #428bca;
+    height:100px;
+    background-color: #103858;
     -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
             box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
   }
@@ -86,7 +101,7 @@
    */
   
   .blog-header {
-    padding-top: 20px;
+    padding-top: 50px;
     padding-bottom: 20px;
   }
   .blog-title {
