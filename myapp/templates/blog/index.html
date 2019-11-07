@@ -44,3 +44,16 @@ this is my first blog
 </div> -->
 {% endfor %}
 {% endblock %}
+
+
+{%block myjs%}
+<script src="{{url_for('static',filename='js/scrollreveal/scrollreveal.js')  }}"></script>
+<script>
+  ScrollReveal().reveal('.blog-main .panel',{
+    delay:100,
+    reset: true,
+    distance:'20px',
+    easing: 'ease-in-out'
+  })
+</script>
+{%endblock%}
