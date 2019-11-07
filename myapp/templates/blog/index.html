@@ -22,18 +22,21 @@ this is my first blog
 {% block blog_text %}
 {% for post in posts %}
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <a class="blog-index-title" href="{{ url_for('blog.article',id=post['id']) }}">{{post['title']}}</a>
-    </h3>
-  </div>
-  <div class="panel-body blog-index-textbody">
-    {{ post['body']|ellipsis  }}
-  </div>
-  <div class="panel-footer">Panel footer</div>
-</div>
 
+<div class="blog-articles">
+  <!-- title -->
+  <h3 class="blog-title"><a href="{{ url_for('blog.article',id=post['id']) }}">{{post['title']}}</a></h3>
+  <!-- avatar -->
+  <span class="blog-avatar">
+    <a href="#">
+      <img src="{{url_for('static',filename='pic/avatar.png')  }}" alt="test">
+    </a>
+  </span>
+  <!-- intro -->
+  <p class="blog-intro">{{ post['body']|ellipsis  }}</p>
+  <!-- info -->
+  <div class="blog-info">posted by liyang 2019.11.11</div>
+</div>
 
 
 <!-- <div class="list-group">
@@ -49,7 +52,7 @@ this is my first blog
 {%block myjs%}
 <script src="{{url_for('static',filename='js/scrollreveal/scrollreveal.js')  }}"></script>
 <script>
-  ScrollReveal().reveal('.blog-main .panel',{
+  ScrollReveal().reveal('.blog-main .blog-articles',{
     delay:100,
     reset: true,
     distance:'20px',
