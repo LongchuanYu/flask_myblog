@@ -44,10 +44,35 @@ def create():
     return render_template('blog/create.html')
 
 
-@bp.route('/article/<int:id>')
+@bp.route('/article/<int:id>',methods=('GET','POST'))
 def article(id):
     post = get_post(id,check_author=False)
-    return render_template('blog/article.html',post=post)
+    db=get_db()
+    comments = db.execute(
+        'SELECT * '
+        ' FROM comment c'
+        ' WHERE c.authorid = ? and c.postid=?',
+        (post['author_id'],post['id'])
+    ).fetchall()
+    try:
+        for com in comments:
+            print(com['ctext'])
+    except:
+        print("comment fetch error")
+    
+    if request.method=='POST':
+        comment_msg = request.form['comment_msg']
+        db = get_db()
+        db.execute(
+            'INSERT INTO comment'
+            ' (authorid,postid,userid,ctext,enable_dis,reply_targetid)'
+            ' VALUES'
+            ' (?,?,?,?,?,?)',
+            (post['author_id'],id,g.user['id'],comment_msg,True,-1)
+        )
+        db.commit()
+        return redirect(url_for('blog.article',id=id))
+    return render_template('blog/article.html',post=post,comments=comments)
 
 
 
@@ -79,15 +104,12 @@ def update(id):
 def delete(id):
     
     #易忘点：数据库查询要.fetchone()，不要忘了额
-    # post = db.execute(
-    #     'SELECT author_id'
-    #     ' FROM post P'
-    #     ' WHERE p.id=?',
-    #     (id,)
-    # ).fetchone()
 
     get_post(id)
     db = get_db()
+    db.execute(
+        'PRAGMA foreign_keys = ON'
+    )
     db.execute(
         'DELETE FROM post WHERE id=?',
         (id,)
@@ -95,6 +117,11 @@ def delete(id):
     #易忘点：数据库操作完毕都要commit一下
     db.commit()
     return redirect(url_for('blog.index'))
+
+
+
+
+
 
 
 

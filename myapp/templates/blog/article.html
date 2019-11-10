@@ -23,4 +23,35 @@
     <a href="{{url_for('blog.delete',id=post['id']) }}" onclick="return confirm('确定删除？')">删除</a>
     {%endif%}
 </div>
+
+<hr>
+
+<div class="comments">
+    <!-- comment-send -->
+    <div class="comment-send">
+        <div class="comment-avatar">
+            <img src="{{url_for('static',filename='pic/avatar.png')  }}" alt="testz">
+        </div>
+        <form method="POST">
+            <div class="comment-box">
+                <textarea name="comment_msg" cols="80" rows="5"></textarea>
+            </div>
+            <input type="hidden" name="form_1" value="form_1">
+            <button class="comment-submit">评论</button>
+        </form>
+    </div>
+    <hr>
+    <!-- comment-list -->
+    <div class="comment-list">
+        <ul>
+            {%for comment in comments%}
+            <li>
+                [{{comment['userid']}}] - {{comment['ctext']}}
+            </li>
+            {%endfor%}
+
+        </ul>
+    </div>
+</div>
+
 {%endblock%}

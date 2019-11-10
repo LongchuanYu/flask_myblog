@@ -11,3 +11,54 @@
     margin-top: 5px;
     color: #a8b1ba;
 }
+
+
+/* comments */
+.comment-send{
+    position: relative;
+}
+
+
+.comment-avatar{
+    float: left;
+    line-height:60.5px;
+    margin-right:20px;
+}
+.comment-avatar img{
+    width:48px;
+    height:48px;
+    border-radius: 50%;
+}
+
+
+.comment-box textarea {
+    font-size:12px;
+    display: inline-box;
+    background-color: #f4f5f7;
+    overflow: auto;
+    border-radius: 4px;
+    color:#555;
+    color: 100% !important;
+    height:65px;
+    padding:5px 10px;
+    line-height: normal;
+    resize:none;
+}
+.comment-box{
+    display: inline-block;
+}
+
+.comment-submit{
+    width:70px;
+    height:64px;
+    position: absolute;
+    top:0;
+    padding:4px 15px;
+    color:#fff;
+    border-radius: 4px;
+    text-align: center;
+    vertical-align: top;
+    border:1px solid #00a1d6;
+    user-select:none;
+    margin-left:20px;
+}
