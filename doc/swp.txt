@@ -1,63 +1,41 @@
-.blog-post {
-    font-size: 0.8em;
-}
-
-
-.blog-article-bottom{
-    font-size: 0.8em;
-    width: 100%;
-    text-align: right;
-    padding-right: 5px;
-    margin-top: 5px;
-    color: #a8b1ba;
-}
-
-
-/* comments */
 .comment-send{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    position: relative;
 }
+
 
 .comment-avatar{
+    float: left;
+    line-height:60.5px;
     margin-right:20px;
 }
-
-
-
-
-.comment-avatar img {
+.comment-avatar img{
     width:48px;
     height:48px;
     border-radius: 50%;
 }
 
 
-.comment-box{
-    width: 80%;
-    max-width: 550px;
-    margin-right:20px;
-}
-
-.comment-box textarea{
+.comment-box textarea {
     font-size:12px;
+    display: inline-box;
     background-color: #f4f5f7;
     overflow: auto;
     border-radius: 4px;
     color:#555;
     color: 100% !important;
     height:65px;
-    width: 100%;
     padding:5px 10px;
     line-height: normal;
     resize:none;
 }
-
+.comment-box{
+    display: inline-block;
+}
 
 .comment-submit{
     width:70px;
     height:64px;
+    position: absolute;
     top:0;
     padding:4px 15px;
     color:#fff;
@@ -66,4 +44,5 @@
     vertical-align: top;
     border:1px solid #00a1d6;
     user-select:none;
+    margin-left:20px;
 }
