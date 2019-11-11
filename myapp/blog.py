@@ -48,31 +48,47 @@ def create():
 def article(id):
     post = get_post(id,check_author=False)
     db=get_db()
+
+
+    #评论出现两条重复的原因在这里，这个JOIN之后会有重复，要考虑如何去重，还要考虑性能。。
+    #评论的userid有问题，，JOIN这种操作还是运用不来
     comments = db.execute(
-        'SELECT * '
-        ' FROM comment c'
-        ' WHERE c.authorid = ? and c.postid=?',
+        'SELECT authorid,postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
+        ' FROM comment c JOIN user u ON c.authorid = ? and c.postid=?'
+        ' WHERE u.id=c.authorid',
         (post['author_id'],post['id'])
     ).fetchall()
-    try:
-        for com in comments:
-            print(com['ctext'])
-    except:
-        print("comment fetch error")
+    # try:
+    #     for com in comments:
+    #         print(com['ctext'])
+    # except:
+    #     print("comment fetch error")
     
     if request.method=='POST':
-        comment_msg = request.form['comment_msg']
-        db = get_db()
-        db.execute(
-            'INSERT INTO comment'
-            ' (authorid,postid,userid,ctext,enable_dis,reply_targetid)'
-            ' VALUES'
-            ' (?,?,?,?,?,?)',
-            (post['author_id'],id,g.user['id'],comment_msg,True,-1)
-        )
-        db.commit()
-        return redirect(url_for('blog.article',id=id))
+        form_category = request.form['form_category']
+        if form_category =="comment_send":
+            comment_msg = request.form['comment_msg']
+            #login_required必须
+            if not g.user:
+                return redirect(url_for('auth.login'))
+            db = get_db()
+            db.execute(
+                'INSERT INTO comment'
+                ' (authorid,postid,userid,ctext,enable_dis,reply_targetid)'
+                ' VALUES'
+                ' (?,?,?,?,?,?)',
+                (post['author_id'],id,g.user['id'],comment_msg,True,-1)
+            )
+            db.commit()
+            return redirect(url_for('blog.article',id=id))
+        elif form_category =="comment_reply":
+            pass
     return render_template('blog/article.html',post=post,comments=comments)
+
+@bp.route('/article/reply/<int:postid>/<int:userid>')
+def reply(postid,userid):
+    print(postid,userid)
+    return
 
 
 
@@ -104,7 +120,6 @@ def update(id):
 def delete(id):
     
     #易忘点：数据库查询要.fetchone()，不要忘了额
-
     get_post(id)
     db = get_db()
     db.execute(
@@ -117,9 +132,6 @@ def delete(id):
     #易忘点：数据库操作完毕都要commit一下
     db.commit()
     return redirect(url_for('blog.index'))
-
-
-
 
 
 

@@ -36,7 +36,7 @@
                 <div class="comment-box">
                     <textarea name="comment_msg" cols="80" rows="5"></textarea>
                 </div>
-                <input type="hidden" name="form_1" value="form_1">
+                <input type="hidden" name="form_category" value="comment_send">
                 <button class="comment-submit">评论</button>
         </div>
     </form>
@@ -46,11 +46,24 @@
         <ul>
             {%for comment in comments%}
             <li>
-                [{{comment['userid']}}] - {{comment['ctext']}}
+                [{{comment['username']}}] - {{comment['ctext']}}  
+                --<a href="{{url_for('blog.reply',postid=post['id'],userid=comment['userid'])}}">回复</a>
             </li>
             {%endfor%}
 
         </ul>
+        <form method="POST">
+            <div class="comment-send ">
+                <div class="comment-avatar">
+                    <img src="{{url_for('static',filename='pic/avatar.png')  }}" alt="testz">
+                </div>
+                    <div class="comment-box">
+                        <textarea name="comment_msg" cols="80" rows="5"></textarea>
+                    </div>
+                    <input type="hidden" name="form_category" value="comment_reply">
+                    <button class="comment-submit">评论</button>
+            </div>
+        </form>
     </div>
 </div>
 
