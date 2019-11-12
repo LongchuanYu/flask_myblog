@@ -58,11 +58,11 @@ def article(id):
     (post['author_id'],post['id'])
     '''
     comments = db.execute(
-        'SELECT authorid,postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
+        'SELECT postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
         ' FROM comment c JOIN user u' 
         ' ON c.userid=u.id'
-        ' WHERE c.authorid = ? and c.postid=?',
-        (post['author_id'],post['id'])
+        ' WHERE c.postid=?',
+        (post['id'],)
     ).fetchall()
     # try:
     #     for com in comments:
@@ -71,19 +71,19 @@ def article(id):
     #     print("comment fetch error")
     
     if request.method=='POST':
+        #login_required必须
+        if not g.user:
+            return redirect(url_for('auth.login'))
         form_category = request.form['form_category']
         if form_category =="comment_send":
             comment_msg = request.form['comment_msg']
-            #login_required必须
-            if not g.user:
-                return redirect(url_for('auth.login'))
             db = get_db()
             db.execute(
                 'INSERT INTO comment'
-                ' (authorid,postid,userid,ctext,enable_dis,reply_targetid)'
+                ' (postid,userid,ctext,enable_dis,reply_targetid,rootid)'
                 ' VALUES'
                 ' (?,?,?,?,?,?)',
-                (post['author_id'],id,g.user['id'],comment_msg,True,-1)
+                (id,g.user['id'],comment_msg,True,-1,-1)
             )
             db.commit()
             return redirect(url_for('blog.article',id=id))
@@ -91,10 +91,12 @@ def article(id):
             pass
     return render_template('blog/article.html',post=post,comments=comments)
 
-@bp.route('/article/reply/<int:postid>/<int:userid>')
-def reply(postid,userid):
-    print(postid,userid)
-    return redirect(url_for('blog.article',id=postid))
+@bp.route('/article/reply/',methods=("GET","POST"))
+def reply():
+    print("???")
+    if request.method=="POST":
+        return "haha"
+    return "heihei"
 
 
 

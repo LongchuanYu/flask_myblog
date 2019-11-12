@@ -18,15 +18,14 @@ CREATE TABLE post (
 
 
 CREATE TABLE comment (
-  authorid INTEGER NOT NULL,
   postid INTEGER NOT NULL,
   userid INTEGER NOT NULL,
   ctext TEXT NOT NULL,
   ctime TIMESTAMP NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime')),
   enable_dis BOOLEAN NOT NULL,
-  reply_targetid INTEGER,
+  reply_targetid INTEGER NOT NULL,
+  rootid INTEGER NOT NULL,
   FOREIGN KEY (userid) REFERENCES user (id),
   FOREIGN KEY (reply_targetid) REFERENCES user (id),
-  FOREIGN KEY (authorid) REFERENCES post (author_id),
   FOREIGN KEY (postid) REFERENCES post (id) ON DELETE CASCADE
 );
