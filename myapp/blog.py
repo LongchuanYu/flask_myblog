@@ -50,12 +50,18 @@ def article(id):
     db=get_db()
 
 
-    #评论出现两条重复的原因在这里，这个JOIN之后会有重复，要考虑如何去重，还要考虑性能。。
+    '''评论出现两条重复的原因在这里，这个JOIN之后会有重复，要考虑如何去重，还要考虑性能。。
     #评论的userid有问题，，JOIN这种操作还是运用不来
+    'SELECT authorid,postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
+    ' FROM comment c JOIN user u ON c.authorid = ? and c.postid=?'
+    ' WHERE u.id=c.authorid',
+    (post['author_id'],post['id'])
+    '''
     comments = db.execute(
         'SELECT authorid,postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
-        ' FROM comment c JOIN user u ON c.authorid = ? and c.postid=?'
-        ' WHERE u.id=c.authorid',
+        ' FROM comment c JOIN user u' 
+        ' ON c.userid=u.id'
+        ' WHERE c.authorid = ? and c.postid=?',
         (post['author_id'],post['id'])
     ).fetchall()
     # try:
@@ -88,7 +94,7 @@ def article(id):
 @bp.route('/article/reply/<int:postid>/<int:userid>')
 def reply(postid,userid):
     print(postid,userid)
-    return
+    return redirect(url_for('blog.article',id=postid))
 
 
 
