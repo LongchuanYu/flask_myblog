@@ -48,23 +48,21 @@
             <li>
                 [{{comment['username']}}] - {{comment['ctext']}}  
                 <!-- --<a href="{-{url_for('blog.reply',postid=post['id'],userid=comment['userid'])}-}">回复</a> -->
-                <a href="javascript:void(0);" onclick="handle_comment_reply('{{post.id}}','{{comment.userid}}',-1)">回复</a>
+                <a href="javascript:void(0);" onclick="handle_comment_reply('{{post.id}}','{{comment.userid}}',-1,'{{comment.username}}')">回复</a>
             </li>
             {%endfor%}
 
         </ul>
-        <form method="POST">
-            <div class="comment-send ">
-                <div class="comment-avatar">
-                    <img src="{{url_for('static',filename='pic/avatar.png')  }}" alt="testz">
-                </div>
-                    <div class="comment-box">
-                        <textarea name="comment_msg" cols="80" rows="5"></textarea>
-                    </div>
-                    <input type="hidden" name="form_category" value="comment_reply">
-                    <button class="comment-submit">评论</button>
+        <div class="comment-send ">
+            <div class="comment-avatar">
+                <img src="{{url_for('static',filename='pic/avatar.png')  }}" alt="testz">
             </div>
-        </form>
+            <div class="comment-box">
+                <textarea name="comment_msg" cols="80" rows="5" placeholder=""></textarea>
+            </div>
+            <input type="hidden" name="form_category" value="comment_reply">
+            <button class="comment-submit ">评论</button>
+        </div>
     </div>
 </div>
 
@@ -72,20 +70,24 @@
 
 {%block myjs%}
 <script>
-function handle_comment_reply(postid,userid,rootid){
-    $.ajax({
-        type:"POST",
-        url:"{{url_for('blog.reply')}}",
-        data:{
-            "postid":postid,
-            "userid":userid,
-            "rootid":rootid
-        },
-        seccess:function(res){
-            console.log(res)
-        }
-    })
-
+function handle_comment_reply(postid,userid,rootid,username){
+    querystr = {
+        "postid":postid,
+        "userid":userid,
+        "rootid":rootid
+    }
+    $(".comment-list .comment-send input").val(JSON.stringify(querystr))
+    $(".comment-list .comment-box textarea").attr("placeholder","@ "+username||"Null")
 }
+$(".comment-list .comment-submit").click(function(){
+    json = $(".comment-list .comment-send input").val()
+    if(!json){
+        return;
+    }
+    q = $.parseJSON(json)
+    console.log(q.postid,q.userid,q.rootid);
+    
+})
+
 </script>
 {%endblock%}
