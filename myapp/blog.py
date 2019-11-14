@@ -52,13 +52,13 @@ def article(id):
 
     '''评论出现两条重复的原因在这里，这个JOIN之后会有重复，要考虑如何去重，还要考虑性能。。
     #评论的userid有问题，，JOIN这种操作还是运用不来
-    'SELECT authorid,postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
+    'SELECT authorid,postid,userid,ctext,ctime,enable_dis,replyid,u.username '
     ' FROM comment c JOIN user u ON c.authorid = ? and c.postid=?'
     ' WHERE u.id=c.authorid',
     (post['author_id'],post['id'])
     '''
     comments = db.execute(
-        'SELECT postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username,rootid '
+        'SELECT c.id as commentid,postid,userid,ctext,ctime,enable_dis,replyid,u.username,rootid '
         ' FROM comment c JOIN user u' 
         ' ON c.userid=u.id'
         ' WHERE c.postid=?'
@@ -81,7 +81,7 @@ def article(id):
             db = get_db()
             db.execute(
                 'INSERT INTO comment'
-                ' (postid,userid,ctext,enable_dis,reply_targetid,rootid)'
+                ' (postid,userid,ctext,enable_dis,replyid,rootid)'
                 ' VALUES'
                 ' (?,?,?,?,?,?)',
                 (id,g.user['id'],comment_msg,True,-1,-1)
@@ -96,18 +96,19 @@ def article(id):
 def reply():
     if request.method=="POST":
         postid = request.values.get("postid")
-        reply_targetid = request.values.get("userid")
+        replyid = request.values.get("commentid")
+        userid = request.values.get("userid")
         rootid = request.values.get("rootid")
         re_text = request.values.get("re_text")
         if int(rootid)<0:
-            rootid = reply_targetid
+            rootid = userid
         db = get_db()
         db.execute(
             'INSERT INTO comment '
-            ' (postid,userid,ctext,enable_dis,reply_targetid,rootid)'
+            ' (postid,userid,ctext,enable_dis,replyid,rootid)'
             ' VALUES'
             ' (?,?,?,?,?,?)',
-            (postid,g.user['id'],re_text,1,reply_targetid,rootid)
+            (postid,g.user['id'],re_text,1,replyid,rootid)
         )
         db.commit()
     return "OK"

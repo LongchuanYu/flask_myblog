@@ -44,32 +44,27 @@
     <!-- comment-list -->
     <div class="comment-list">
         <ul>
-            {%for comment in comments%}
-            <li>
-                {% if comment.rootid==-1%}
-                    [{{comment['username']}}] : {{comment['ctext']}}  
-                    <a href="javascript:void(0);" 
-                    onclick="handle_comment_reply(
-                        '{{post.id}}',
-                        '{{comment.userid}}',
-                        '{{comment.rootid}}',
-                        '{{comment.username}}'
-                        )"
-                    >
-                    回复
-                    </a>
+        {%for comment in comments%}
+            {% if comment.rootid==-1%}
+                <li>
+                    <span>[{{comment['username']}}] : {{comment['ctext']}}  </span>
+                    <a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.commentid}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>   
                     <ul>
                         {% for cmt in comments %}
-                            {%if comment.userid==cmt.rootid%}
-                                <li>
-                                    [{{cmt.username}} 回复 {{cmt.reply_targetid}}] : {{cmt.ctext}}
-                                </li>
+                            {%if cmt.rootid==comment.userid and cmt.replyid==comment.commentid%}
+                                {% if cmt.rootid==comment.userid %}
+                                <li>[{{cmt.username}}] : {{cmt.ctext}}<a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.commentid}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>  </li>
+                                {%else%}
+                                <li>[{{cmt.username}} 回复 {{cmt.replyid}}] : {{cmt.ctext}}<a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.commentid}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>  </li>
+                                {%endif%}
+                                 
                             {%endif%}
                         {% endfor %}
                     </ul>
-                {% endif %}
-            </li>
-            {%endfor%}
+                </li>
+            {% endif %}
+        
+        {%endfor%}
 
         </ul>
         <div class="comment-send ">
@@ -89,9 +84,10 @@
 
 {%block myjs%}
 <script>
-function handle_comment_reply(postid,userid,rootid,username){
+function handle_comment_reply(postid,commentid,userid,rootid,username){
     querystr = {
         "postid":postid,
+        "commentid":commentid,
         "userid":userid,
         "rootid":rootid
     }
@@ -106,19 +102,15 @@ $(".comment-list .comment-submit").click(function(){
     if(!json){
         return;
     }
-    var {postid,userid,rootid} = $.parseJSON(json);
+    var mydata = $.parseJSON(json);
+    mydata.re_text=re_text;
     $.ajax({
         type:"POST",
         url:"{{url_for('blog.reply')}}",
-        data:{
-            "postid":postid,
-            "userid":userid,
-            "rootid":rootid,
-            "re_text":re_text
-        },
+        data:mydata,
         success:function(res){
             if(res){
-                window.location.replace("/article/"+postid);
+                window.location.replace("/article/"+mydata.postid);
             }
 
         }

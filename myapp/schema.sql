@@ -24,9 +24,9 @@ CREATE TABLE comment (
   ctext TEXT NOT NULL,
   ctime TIMESTAMP NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime')),
   enable_dis BOOLEAN NOT NULL,
-  reply_targetid INTEGER NOT NULL,
+  replyid INTEGER NOT NULL,
   rootid INTEGER NOT NULL,
   FOREIGN KEY (userid) REFERENCES user (id),
-  FOREIGN KEY (reply_targetid) REFERENCES user (id),
+  FOREIGN KEY (replyid) REFERENCES user (id),
   FOREIGN KEY (postid) REFERENCES post (id) ON DELETE CASCADE
 );
