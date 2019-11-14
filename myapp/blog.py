@@ -58,10 +58,11 @@ def article(id):
     (post['author_id'],post['id'])
     '''
     comments = db.execute(
-        'SELECT postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username '
+        'SELECT postid,userid,ctext,ctime,enable_dis,reply_targetid,u.username,rootid '
         ' FROM comment c JOIN user u' 
         ' ON c.userid=u.id'
-        ' WHERE c.postid=?',
+        ' WHERE c.postid=?'
+        ' ORDER BY c.ctime DESC',
         (post['id'],)
     ).fetchall()
     # try:
@@ -93,10 +94,23 @@ def article(id):
 
 @bp.route('/article/reply/',methods=("GET","POST"))
 def reply():
-    print("???")
     if request.method=="POST":
-        return "haha"
-    return "heihei"
+        postid = request.values.get("postid")
+        reply_targetid = request.values.get("userid")
+        rootid = request.values.get("rootid")
+        re_text = request.values.get("re_text")
+        if int(rootid)<0:
+            rootid = reply_targetid
+        db = get_db()
+        db.execute(
+            'INSERT INTO comment '
+            ' (postid,userid,ctext,enable_dis,reply_targetid,rootid)'
+            ' VALUES'
+            ' (?,?,?,?,?,?)',
+            (postid,g.user['id'],re_text,1,reply_targetid,rootid)
+        )
+        db.commit()
+    return "OK"
 
 
 

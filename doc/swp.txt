@@ -10,3 +10,24 @@
             console.log(res)
         }
     })
+
+写入数据库的数据，不要escape，前端加safe过滤
+写入数据库的数据，进行escape，在输出到前端时用Python端用html.unescape(your_data)反转义回去，然后safe过滤
+写入数据库的数据，进行escape，直接在模板上使用{{ Markup(your_data).unescape() | safe }}
+
+
+
+
+
+                [{{comment['username']}}] : {{comment['ctext']}}  
+                <!-- --<a href="{-{url_for('blog.reply',postid=post['id'],userid=comment['userid'])}-}">回复</a> -->
+                <a href="javascript:void(0);" 
+                onclick="handle_comment_reply(
+                    '{{post.id}}',
+                    '{{comment.userid}}',
+                    '{{comment.rootid}}',
+                    '{{comment.username}}'
+                    )"
+                >
+                回复
+                </a>

@@ -46,9 +46,28 @@
         <ul>
             {%for comment in comments%}
             <li>
-                [{{comment['username']}}] - {{comment['ctext']}}  
-                <!-- --<a href="{-{url_for('blog.reply',postid=post['id'],userid=comment['userid'])}-}">回复</a> -->
-                <a href="javascript:void(0);" onclick="handle_comment_reply('{{post.id}}','{{comment.userid}}',-1,'{{comment.username}}')">回复</a>
+                {% if comment.rootid==-1%}
+                    [{{comment['username']}}] : {{comment['ctext']}}  
+                    <a href="javascript:void(0);" 
+                    onclick="handle_comment_reply(
+                        '{{post.id}}',
+                        '{{comment.userid}}',
+                        '{{comment.rootid}}',
+                        '{{comment.username}}'
+                        )"
+                    >
+                    回复
+                    </a>
+                    <ul>
+                        {% for cmt in comments %}
+                            {%if comment.userid==cmt.rootid%}
+                                <li>
+                                    [{{cmt.username}} 回复 {{cmt.reply_targetid}}] : {{cmt.ctext}}
+                                </li>
+                            {%endif%}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </li>
             {%endfor%}
 
@@ -76,16 +95,34 @@ function handle_comment_reply(postid,userid,rootid,username){
         "userid":userid,
         "rootid":rootid
     }
+    console.log(querystr);
+    $(".comment-list .comment-box textarea").val("")
     $(".comment-list .comment-send input").val(JSON.stringify(querystr))
     $(".comment-list .comment-box textarea").attr("placeholder","@ "+username||"Null")
 }
 $(".comment-list .comment-submit").click(function(){
-    json = $(".comment-list .comment-send input").val()
+    var json = $(".comment-list .comment-send input").val()
+    var re_text = $(".comment-list .comment-box textarea").val()
     if(!json){
         return;
     }
-    q = $.parseJSON(json)
-    console.log(q.postid,q.userid,q.rootid);
+    var {postid,userid,rootid} = $.parseJSON(json);
+    $.ajax({
+        type:"POST",
+        url:"{{url_for('blog.reply')}}",
+        data:{
+            "postid":postid,
+            "userid":userid,
+            "rootid":rootid,
+            "re_text":re_text
+        },
+        success:function(res){
+            if(res){
+                window.location.replace("/article/"+postid);
+            }
+
+        }
+    })
     
 })
 
