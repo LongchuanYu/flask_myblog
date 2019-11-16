@@ -1,4 +1,4 @@
-    $.ajax({
+﻿    $.ajax({
         type:"POST",
         url:"{{url_for('blog.reply')}}",
         data:{
@@ -31,3 +31,36 @@
                 >
                 回复
                 </a>
+
+
+
+
+
+
+
+
+
+
+
+
+    if not g.user:
+        return "Redirect"
+    if request.method=="POST":
+        
+        postid = request.values.get("postid")
+        replyid = request.values.get("commentid")
+        userid = request.values.get("userid")
+        rootid = request.values.get("rootid")
+        re_text = request.values.get("re_text")
+        if int(rootid)<0:
+            rootid = userid
+        db = get_db()
+        db.execute(
+            'INSERT INTO comment '
+            ' (postid,userid,ctext,enable_dis,replyid,rootid)'
+            ' VALUES'
+            ' (?,?,?,?,?,?)',
+            (postid,g.user['id'],re_text,1,replyid,rootid)
+        )
+        db.commit()
+    return "OK"

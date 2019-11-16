@@ -44,27 +44,27 @@
     <!-- comment-list -->
     <div class="comment-list">
         <ul>
-        {%for comment in comments%}
-            {% if comment.rootid==-1%}
+        {%-for comment in comments-%}
+            {%-if comment.rootid==-1-%}
                 <li>
                     <span>[{{comment['username']}}] : {{comment['ctext']}}  </span>
-                    <a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.commentid}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>   
+                    <a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.id}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>   
                     <ul>
-                        {% for cmt in comments %}
-                            {%if cmt.rootid==comment.userid and cmt.replyid==comment.commentid%}
-                                {% if cmt.rootid==comment.userid %}
-                                <li>[{{cmt.username}}] : {{cmt.ctext}}<a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.commentid}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>  </li>
-                                {%else%}
-                                <li>[{{cmt.username}} 回复 {{cmt.replyid}}] : {{cmt.ctext}}<a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{comment.commentid}}','{{comment.userid}}','{{comment.rootid}}','{{comment.username}}')"> 回复</a>  </li>
-                                {%endif%}
+                        {%-for reply in comments|reverse-%}
+                            {%-if reply.rootid==comment.id-%}
+                                {%-if reply.replyid==comment.id-%}
+                                <li>[{{reply.username}}] : {{reply.ctext}}<a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{reply.id}}','{{reply.userid}}','{{reply.rootid}}','{{reply.username}}')"> 回复</a>  </li>
+                                {%-else-%}
+                                <li>[{{reply.username}} 回复 {{reply.replyname}}] : {{reply.ctext}}<a href="javascript:void(0);"  onclick="handle_comment_reply('{{post.id}}','{{reply.id}}','{{reply.userid}}','{{reply.rootid}}','{{reply.username}}')"> 回复</a>  </li>
+                                {%-endif-%}
                                  
-                            {%endif%}
-                        {% endfor %}
+                            {%-endif-%}
+                        {%-endfor-%}
                     </ul>
                 </li>
-            {% endif %}
+            {%-endif-%}
         
-        {%endfor%}
+        {%-endfor-%}
 
         </ul>
         <div class="comment-send ">
@@ -80,22 +80,32 @@
     </div>
 </div>
 
+
+
+
 {%endblock%}
+
+
 
 {%block myjs%}
 <script>
-function handle_comment_reply(postid,commentid,userid,rootid,username){
+function handle_comment_reply(postid,id,userid,rootid,username){
+
     querystr = {
         "postid":postid,
-        "commentid":commentid,
+        "commentid":id,
         "userid":userid,
-        "rootid":rootid
+        "rootid":rootid<0?id:rootid
     }
     console.log(querystr);
     $(".comment-list .comment-box textarea").val("")
     $(".comment-list .comment-send input").val(JSON.stringify(querystr))
     $(".comment-list .comment-box textarea").attr("placeholder","@ "+username||"Null")
 }
+
+
+
+
 $(".comment-list .comment-submit").click(function(){
     var json = $(".comment-list .comment-send input").val()
     var re_text = $(".comment-list .comment-box textarea").val()
@@ -109,8 +119,13 @@ $(".comment-list .comment-submit").click(function(){
         url:"{{url_for('blog.reply')}}",
         data:mydata,
         success:function(res){
-            if(res){
-                window.location.replace("/article/"+mydata.postid);
+            if(res ){
+                if(res=="OK"){
+                    window.location.replace("/article/"+mydata.postid);
+                }else{
+                    window.location.replace("/auth/login");
+                }
+                
             }
 
         }

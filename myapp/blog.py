@@ -58,19 +58,29 @@ def article(id):
     (post['author_id'],post['id'])
     '''
     comments = db.execute(
-        'SELECT c.id as commentid,postid,userid,ctext,ctime,enable_dis,replyid,u.username,rootid '
-        ' FROM comment c JOIN user u' 
-        ' ON c.userid=u.id'
-        ' WHERE c.postid=?'
-        ' ORDER BY c.ctime DESC',
+        'select ta.*,tb.replyname'
+        '	from'
+        '	('
+        '	SELECT c.*,u.username '
+        '	FROM comment c join user u'
+        '	ON c.userid = u.id'
+        '	where postid=?'
+        '	) as ta'
+        '	left join'
+        '	('
+        '	SELECT c1.replyid,c2.userid,u.username as replyname'
+        '	FROM comment c1 JOIN comment c2 join user u'
+        '	ON c1.replyid=c2.id and c2.userid = u.id'
+        '	GROUP BY c1.replyid'
+        '	) as tb'
+        '	on ta.replyid = tb.replyid'
+        '	ORDER BY ctime DESC',
         (post['id'],)
     ).fetchall()
-    # try:
-    #     for com in comments:
-    #         print(com['ctext'])
-    # except:
-    #     print("comment fetch error")
-    
+
+
+
+
     if request.method=='POST':
         #login_required必须
         if not g.user:
@@ -94,26 +104,23 @@ def article(id):
 
 @bp.route('/article/reply/',methods=("GET","POST"))
 def reply():
-    if request.method=="POST":
-        postid = request.values.get("postid")
-        replyid = request.values.get("commentid")
-        userid = request.values.get("userid")
-        rootid = request.values.get("rootid")
-        re_text = request.values.get("re_text")
-        if int(rootid)<0:
-            rootid = userid
-        db = get_db()
-        db.execute(
-            'INSERT INTO comment '
-            ' (postid,userid,ctext,enable_dis,replyid,rootid)'
-            ' VALUES'
-            ' (?,?,?,?,?,?)',
-            (postid,g.user['id'],re_text,1,replyid,rootid)
-        )
-        db.commit()
+    if not g.user:
+        return "Redirect"
+    postid = request.values.get("postid")
+    replyid = request.values.get("commentid")  #我要回复哪一条评论(回复)？
+    userid = request.values.get("userid")  #我是谁？
+    rootid = request.values.get("rootid") #在哪条根评论下回复的？
+    re_text = request.values.get("re_text")
+    db = get_db()
+    db.execute(
+        'INSERT INTO comment '
+        ' (postid,userid,ctext,enable_dis,replyid,rootid)'
+        ' VALUES'
+        ' (?,?,?,?,?,?)',
+        (postid,g.user['id'],re_text,1,replyid,rootid)
+    )
+    db.commit()
     return "OK"
-
-
 
 @bp.route('/update/<int:id>',methods=('GET','POST') )
 @login_required
