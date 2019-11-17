@@ -14,27 +14,25 @@ def create_app():
 	app.DEBUG=True
 	app.config['CKEDITOR_SERVE_LOCAL'] = True
 	app.config['CKEDITOR_HEIGHT'] = 400
-	try:
-		os.makedirs(app.instance_path)
-	except OSError:
-		print('makedirs existed')
 
-	@app.template_filter('ellipsis')
-	def do_ellipsis(arg):
-		import re
-		return re.sub(r"<.*?>",'',arg)
+	# @app.template_filter('ellipsis')
+	# def do_ellipsis(arg):
+	# 	import re
+	# 	return re.sub(r"<.*?>",'',arg)
 
 
 
-	from . import db
+	# from . import db
 	db.init_app(app)
-	from . import auth
-	app.register_blueprint(auth.bp)
+	# from . import auth
+	# app.register_blueprint(auth.bp)
 
-	from . import blog
-	app.register_blueprint(blog.bp)
-	app.add_url_rule('/',endpoint='index')
+	# from . import blog
+	# app.register_blueprint(blog.bp)
+	# app.add_url_rule('/',endpoint='index')
 
 	
-	ckeditor.init_app(app)
+	# ckeditor.init_app(app)
+
+
 	return app
